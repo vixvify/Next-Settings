@@ -1,0 +1,44 @@
+npx create-next-app@latest my-next-app
+
+import { Prompt } from 'next/font/google'
+
+const kanit = Kanit({
+  subsets: ['thai', 'latin'],
+  weight: ['400', '600'],  // เลือกน้ำหนักฟอนต์
+  variable: '--font-kanit', // ตั้งชื่อ CSS variable
+})
+
+<html lang="th" className={kanit.className}>
+      <body>{children}</body>
+</html>
+
+// glocal.css
+body {
+  font-family: var(--font-kanit);
+}
+
+npm install prisma --save-dev
+npm install @prisma/client
+
+npx prisma init --datasource-provider mongodb
+จะได้โฟลเดอร์ prisma/ และไฟล์ .env
+
+แก้ .env ให้ใส่ MongoDB URI ของคุณ เพิ่ม /ชื่อdb หลัง.net
+
+สร้าง schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    String @id @default(auto()) @map("_id") @test.ObjectId
+  name  String
+  email String @unique
+}
+
+npx prisma generate
