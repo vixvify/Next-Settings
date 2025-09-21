@@ -101,8 +101,8 @@ export const authOptions: NextAuthOptions = {
         if (!existingUser) {
           await prisma.user.create({
             data: {
-              username: user.name as string,
-              password: '',
+              username: user.name ?? user.email!.split('@')[0],
+              password: null,
               email: user.email as string,
             },
           });
@@ -112,6 +112,7 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user }: { token: JWT; user: any }) {
       if (user) {
+        token.id = user.id;
         token.username = user.username;
         token.email = user.email;
       }
@@ -120,6 +121,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }: { session: any; token: JWT }) {
       if (token) {
         session.user = {
+          id: token.id,
           name: token.username,
           email: token.email,
         };
